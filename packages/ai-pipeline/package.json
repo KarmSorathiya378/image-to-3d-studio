@@ -1,0 +1,23 @@
+{
+  "name": "@image-to-3d/ai-pipeline",
+  "version": "1.0.0",
+  "description": "VLM analysis, image preprocessing, and geometry planning pipeline for AI Image-to-3D Studio",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "node --experimental-strip-types --test \"tests/**/*.test.ts\""
+  },
+  "keywords": [
+    "3d",
+    "vlm",
+    "geometry-planning",
+    "scenespec",
+    "image-processing"
+  ],
+  "author": "Wren <terminal-4>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}
