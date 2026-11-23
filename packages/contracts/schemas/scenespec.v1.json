@@ -1,0 +1,668 @@
+{
+  "$defs": {
+    "AlphaMode": {
+      "enum": [
+        "OPAQUE",
+        "MASK",
+        "BLEND"
+      ],
+      "title": "AlphaMode",
+      "type": "string"
+    },
+    "BooleanType": {
+      "enum": [
+        "union",
+        "difference",
+        "intersection"
+      ],
+      "title": "BooleanType",
+      "type": "string"
+    },
+    "CameraHint": {
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "default": [
+            2.0,
+            -3.0,
+            2.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Position",
+          "type": "array"
+        },
+        "target": {
+          "default": [
+            0.0,
+            0.0,
+            0.5
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Target",
+          "type": "array"
+        },
+        "fov": {
+          "default": 45.0,
+          "maximum": 120.0,
+          "minimum": 10.0,
+          "title": "Fov",
+          "type": "number"
+        }
+      },
+      "title": "CameraHint",
+      "type": "object"
+    },
+    "CoordinateSystem": {
+      "enum": [
+        "Z_UP",
+        "Y_UP"
+      ],
+      "title": "CoordinateSystem",
+      "type": "string"
+    },
+    "LightSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/LightType",
+          "default": "directional"
+        },
+        "position": {
+          "default": [
+            4.0,
+            -4.0,
+            5.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Position",
+          "type": "array"
+        },
+        "color": {
+          "default": "#FFFFFF",
+          "title": "Color",
+          "type": "string"
+        },
+        "intensity": {
+          "default": 2.0,
+          "maximum": 1000.0,
+          "minimum": 0.0,
+          "title": "Intensity",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "LightSpec",
+      "type": "object"
+    },
+    "LightType": {
+      "enum": [
+        "directional",
+        "point",
+        "spot",
+        "ambient",
+        "sun"
+      ],
+      "title": "LightType",
+      "type": "string"
+    },
+    "MaterialSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "baseColor": {
+          "default": "#8F684A",
+          "description": "Hex color format e.g. #RRGGBB or #RRGGBBAA",
+          "title": "Basecolor",
+          "type": "string"
+        },
+        "roughness": {
+          "default": 0.7,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Roughness",
+          "type": "number"
+        },
+        "metallic": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Metallic",
+          "type": "number"
+        },
+        "emissiveColor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Emissivecolor"
+        },
+        "emissiveIntensity": {
+          "default": 0.0,
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Emissiveintensity",
+          "type": "number"
+        },
+        "opacity": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Opacity",
+          "type": "number"
+        },
+        "alphaMode": {
+          "$ref": "#/$defs/AlphaMode",
+          "default": "OPAQUE"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "MaterialSpec",
+      "type": "object"
+    },
+    "MeshModifier": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "$ref": "#/$defs/ModifierOp"
+        },
+        "booleanType": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BooleanType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "targetPartId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Targetpartid"
+        },
+        "bevelWidth": {
+          "anyOf": [
+            {
+              "maximum": 5.0,
+              "minimum": 0.0001,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bevelwidth"
+        },
+        "bevelSegments": {
+          "anyOf": [
+            {
+              "maximum": 16,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bevelsegments"
+        },
+        "solidifyThickness": {
+          "anyOf": [
+            {
+              "maximum": 5.0,
+              "minimum": -5.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Solidifythickness"
+        },
+        "subdivisionLevels": {
+          "anyOf": [
+            {
+              "maximum": 4,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subdivisionlevels"
+        },
+        "mirrorAxis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MirrorAxis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "op"
+      ],
+      "title": "MeshModifier",
+      "type": "object"
+    },
+    "MirrorAxis": {
+      "enum": [
+        "X",
+        "Y",
+        "Z"
+      ],
+      "title": "MirrorAxis",
+      "type": "string"
+    },
+    "ModifierOp": {
+      "enum": [
+        "boolean",
+        "bevel",
+        "solidify",
+        "subdivision",
+        "mirror"
+      ],
+      "title": "ModifierOp",
+      "type": "string"
+    },
+    "PrimitiveType": {
+      "enum": [
+        "box",
+        "cylinder",
+        "sphere",
+        "cone",
+        "plane",
+        "capsule",
+        "torus",
+        "extrudedPolygon",
+        "lathe",
+        "parameterizedCurve"
+      ],
+      "title": "PrimitiveType",
+      "type": "string"
+    },
+    "SceneMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schemaversion",
+          "type": "string"
+        },
+        "objectName": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Objectname",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "generator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "vlm-geometry-planner",
+          "title": "Generator"
+        },
+        "createdAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Createdat"
+        }
+      },
+      "required": [
+        "objectName"
+      ],
+      "title": "SceneMetadata",
+      "type": "object"
+    },
+    "ScenePart": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "type": {
+          "$ref": "#/$defs/PrimitiveType"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "description": "Primitive specific parameters matching type.",
+          "title": "Parameters",
+          "type": "object"
+        },
+        "parentId": {
+          "anyOf": [
+            {
+              "pattern": "^[a-zA-Z0-9_\\-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parentid"
+        },
+        "position": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Position",
+          "type": "array"
+        },
+        "rotationDeg": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Rotationdeg",
+          "type": "array"
+        },
+        "scale": {
+          "default": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Scale",
+          "type": "array"
+        },
+        "materialId": {
+          "anyOf": [
+            {
+              "pattern": "^[a-zA-Z0-9_\\-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Materialid"
+        },
+        "modifiers": {
+          "items": {
+            "$ref": "#/$defs/MeshModifier"
+          },
+          "title": "Modifiers",
+          "type": "array"
+        },
+        "smoothShading": {
+          "default": true,
+          "title": "Smoothshading",
+          "type": "boolean"
+        },
+        "visible": {
+          "default": true,
+          "title": "Visible",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "parameters"
+      ],
+      "title": "ScenePart",
+      "type": "object"
+    },
+    "UnitType": {
+      "enum": [
+        "meters",
+        "centimeters",
+        "millimeters",
+        "relative"
+      ],
+      "title": "UnitType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/SceneMetadata"
+    },
+    "coordinateSystem": {
+      "$ref": "#/$defs/CoordinateSystem",
+      "default": "Z_UP"
+    },
+    "units": {
+      "$ref": "#/$defs/UnitType",
+      "default": "relative"
+    },
+    "parts": {
+      "items": {
+        "$ref": "#/$defs/ScenePart"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Parts",
+      "type": "array"
+    },
+    "materials": {
+      "items": {
+        "$ref": "#/$defs/MaterialSpec"
+      },
+      "maxItems": 64,
+      "title": "Materials",
+      "type": "array"
+    },
+    "camera": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CameraHint"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "lights": {
+      "items": {
+        "$ref": "#/$defs/LightSpec"
+      },
+      "maxItems": 16,
+      "title": "Lights",
+      "type": "array"
+    },
+    "uncertaintyNotes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 32,
+      "title": "Uncertaintynotes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "metadata",
+    "parts"
+  ],
+  "title": "SceneSpec",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Canonical SceneSpec v1 schema for AI Image-to-3D Studio"
+}

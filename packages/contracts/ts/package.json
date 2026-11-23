@@ -1,0 +1,16 @@
+{
+  "name": "@image-to-3d/contracts",
+  "version": "1.0.0",
+  "description": "TypeScript type contracts and SceneSpec schema definitions",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": ["3d", "gltf", "scenespec", "ai"],
+  "author": "AI Image-to-3D Studio",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}
