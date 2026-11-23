@@ -1,0 +1,57 @@
+{
+  "name": "@image-to-3d/viewer",
+  "version": "1.0.0",
+  "description": "Interactive Three.js and React Three Fiber 3D GLB viewer for Image-to-3D Studio",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --experimental-strip-types --test tests/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "threejs",
+    "react-three-fiber",
+    "drei",
+    "glb",
+    "3d-viewer",
+    "image-to-3d"
+  ],
+  "author": "Sage <sage@image-to-3d.internal>",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "three": ">=0.160.0"
+  },
+  "peerDependenciesMeta": {
+    "@react-three/fiber": {
+      "optional": true
+    },
+    "@react-three/drei": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "three": "^0.174.0"
+  },
+  "devDependencies": {
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.174.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "^5.6.0"
+  }
+}
