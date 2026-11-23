@@ -1,0 +1,21 @@
+{
+  "name": "@image-to-3d/providers",
+  "version": "1.0.0",
+  "description": "Universal BYOK Provider Layer and Capability Registry for Image-to-3D Studio",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/**/*.test.ts"
+  },
+  "keywords": [
+    "byok",
+    "ai",
+    "providers",
+    "capability-registry",
+    "scenespec",
+    "image-to-3d"
+  ],
+  "author": "Image-to-3D Studio Engineering",
+  "license": "Apache-2.0"
+}
