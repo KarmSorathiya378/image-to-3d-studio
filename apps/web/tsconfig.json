@@ -31,7 +31,7 @@
         "./src/lib/viewer-bridge"
       ],
       "@image-to-3d/viewer": [
-        "./src/lib/viewer-bridge"
+        "../../packages/viewer/dist/index.js"
       ]
     }
   },

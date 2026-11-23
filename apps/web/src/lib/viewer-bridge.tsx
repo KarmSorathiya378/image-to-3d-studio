@@ -5,7 +5,7 @@ import * as THREE from "three";
 import type { LightingPreset, ModelAsset, SceneSpec } from "@/types";
 
 // Re-export types and utilities from Sage's packages/viewer
-export * from "../../../../packages/viewer/dist/index.js";
+export * from "@image-to-3d/viewer";
 
 export interface ViewerProps {
   src?: string;
