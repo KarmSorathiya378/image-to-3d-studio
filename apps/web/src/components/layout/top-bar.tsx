@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Download,
@@ -45,6 +45,11 @@ export const TopBar: React.FC<TopBarProps> = ({
   const { providers, setDefaultVision } = useProviderStore();
   const { user, logout } = useAuthStore();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
@@ -269,7 +274,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         <div className="flex items-center border border-border rounded-md p-0.5 bg-background">
           <button
             onClick={() => setTheme("light")}
-            className={`p-1 rounded ${theme === "light" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            className={`p-1 rounded ${mounted && theme === "light" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
             title="Light theme"
             aria-label="Light theme"
           >
@@ -277,7 +282,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           </button>
           <button
             onClick={() => setTheme("dark")}
-            className={`p-1 rounded ${theme === "dark" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            className={`p-1 rounded ${mounted && theme === "dark" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
             title="Dark theme"
             aria-label="Dark theme"
           >
@@ -285,7 +290,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           </button>
           <button
             onClick={() => setTheme("contrast")}
-            className={`p-1 rounded ${theme === "contrast" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            className={`p-1 rounded ${mounted && theme === "contrast" ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground"}`}
             title="High contrast theme"
             aria-label="High contrast theme"
           >
