@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "1.0",
+  "metadata": {
+    "objectName": "ceramic_mug_with_wooden_coaster",
+    "description": "Ceramic coffee mug with handle resting on a wooden coaster",
+    "generator": "deterministic-test-fixture",
+    "createdAt": "2026-11-23T20:00:00Z"
+  },
+  "coordinateSystem": "Z_UP",
+  "units": "relative",
+  "materials": [
+    {
+      "id": "mat_ceramic_white",
+      "name": "Glossy White Ceramic",
+      "baseColor": "#F0EFEB",
+      "roughness": 0.15,
+      "metallic": 0.05,
+      "opacity": 1.0,
+      "alphaMode": "OPAQUE"
+    },
+    {
+      "id": "mat_dark_wood",
+      "name": "Oiled Walnut Wood",
+      "baseColor": "#4A3525",
+      "roughness": 0.65,
+      "metallic": 0.0,
+      "opacity": 1.0,
+      "alphaMode": "OPAQUE"
+    }
+  ],
+  "parts": [
+    {
+      "id": "coaster_base",
+      "name": "Square Wooden Coaster",
+      "type": "box",
+      "parameters": {
+        "size": [1.4, 1.4, 0.08]
+      },
+      "position": [0.0, 0.0, 0.04],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_dark_wood",
+      "modifiers": [
+        {
+          "op": "bevel",
+          "bevelWidth": 0.015,
+          "bevelSegments": 2
+        }
+      ],
+      "smoothShading": false,
+      "visible": true
+    },
+    {
+      "id": "mug_body",
+      "name": "Cylindrical Mug Body",
+      "type": "cylinder",
+      "parameters": {
+        "radius": 0.45,
+        "height": 0.85,
+        "segments": 32,
+        "capTop": true,
+        "capBottom": true
+      },
+      "parentId": "coaster_base",
+      "position": [0.0, 0.0, 0.465],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_ceramic_white",
+      "smoothShading": true,
+      "visible": true
+    },
+    {
+      "id": "mug_handle",
+      "name": "Mug Torus Handle",
+      "type": "torus",
+      "parameters": {
+        "majorRadius": 0.26,
+        "minorRadius": 0.055,
+        "majorSegments": 32,
+        "minorSegments": 16
+      },
+      "parentId": "mug_body",
+      "position": [0.45, 0.0, 0.0],
+      "rotationDeg": [90.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_ceramic_white",
+      "smoothShading": true,
+      "visible": true
+    }
+  ],
+  "camera": {
+    "position": [1.8, -2.2, 1.4],
+    "target": [0.0, 0.0, 0.45],
+    "fov": 45.0
+  },
+  "lights": [
+    {
+      "id": "key_light",
+      "type": "directional",
+      "position": [3.0, -3.0, 4.0],
+      "color": "#FFFFFF",
+      "intensity": 3.0
+    }
+  ],
+  "uncertaintyNotes": [
+    "Coaster bevel and mug inner wall thickness assumed from standard ceramic proportions."
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0",
+  "metadata": {
+    "objectName": "modern_dining_table",
+    "description": "Rectangular dining table with four tapered cylindrical legs and support apron",
+    "generator": "deterministic-test-fixture",
+    "createdAt": "2026-11-23T20:00:00Z"
+  },
+  "coordinateSystem": "Z_UP",
+  "units": "relative",
+  "materials": [
+    {
+      "id": "mat_oak_top",
+      "name": "Natural Solid Oak",
+      "baseColor": "#C49A6C",
+      "roughness": 0.55,
+      "metallic": 0.0,
+      "opacity": 1.0,
+      "alphaMode": "OPAQUE"
+    },
+    {
+      "id": "mat_black_steel",
+      "name": "Matte Powdercoated Steel",
+      "baseColor": "#222222",
+      "roughness": 0.8,
+      "metallic": 0.85,
+      "opacity": 1.0,
+      "alphaMode": "OPAQUE"
+    }
+  ],
+  "parts": [
+    {
+      "id": "tabletop",
+      "name": "Solid Oak Tabletop",
+      "type": "box",
+      "parameters": {
+        "size": [1.8, 1.0, 0.08]
+      },
+      "position": [0.0, 0.0, 0.76],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_oak_top",
+      "modifiers": [
+        {
+          "op": "bevel",
+          "bevelWidth": 0.015,
+          "bevelSegments": 3
+        }
+      ],
+      "smoothShading": false,
+      "visible": true
+    },
+    {
+      "id": "leg_fl",
+      "name": "Front Left Leg",
+      "type": "cylinder",
+      "parameters": {
+        "radius": 0.045,
+        "height": 0.72,
+        "segments": 24,
+        "capTop": true,
+        "capBottom": true
+      },
+      "parentId": "tabletop",
+      "position": [-0.75, -0.38, -0.4],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_black_steel",
+      "smoothShading": true,
+      "visible": true
+    },
+    {
+      "id": "leg_fr",
+      "name": "Front Right Leg",
+      "type": "cylinder",
+      "parameters": {
+        "radius": 0.045,
+        "height": 0.72,
+        "segments": 24,
+        "capTop": true,
+        "capBottom": true
+      },
+      "parentId": "tabletop",
+      "position": [0.75, -0.38, -0.4],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_black_steel",
+      "smoothShading": true,
+      "visible": true
+    },
+    {
+      "id": "leg_bl",
+      "name": "Back Left Leg",
+      "type": "cylinder",
+      "parameters": {
+        "radius": 0.045,
+        "height": 0.72,
+        "segments": 24,
+        "capTop": true,
+        "capBottom": true
+      },
+      "parentId": "tabletop",
+      "position": [-0.75, 0.38, -0.4],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_black_steel",
+      "smoothShading": true,
+      "visible": true
+    },
+    {
+      "id": "leg_br",
+      "name": "Back Right Leg",
+      "type": "cylinder",
+      "parameters": {
+        "radius": 0.045,
+        "height": 0.72,
+        "segments": 24,
+        "capTop": true,
+        "capBottom": true
+      },
+      "parentId": "tabletop",
+      "position": [0.75, 0.38, -0.4],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_black_steel",
+      "smoothShading": true,
+      "visible": true
+    },
+    {
+      "id": "support_rail_x",
+      "name": "Longitudinal Cross Rail",
+      "type": "box",
+      "parameters": {
+        "size": [1.5, 0.04, 0.04]
+      },
+      "parentId": "tabletop",
+      "position": [0.0, 0.0, -0.06],
+      "rotationDeg": [0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "materialId": "mat_black_steel",
+      "smoothShading": false,
+      "visible": true
+    }
+  ],
+  "camera": {
+    "position": [2.5, -3.0, 2.0],
+    "target": [0.0, 0.0, 0.4],
+    "fov": 45.0
+  },
+  "lights": [
+    {
+      "id": "sun_light",
+      "type": "sun",
+      "position": [4.0, -4.0, 6.0],
+      "color": "#FFF8E7",
+      "intensity": 2.5
+    }
+  ],
+  "uncertaintyNotes": [
+    "Leg attachments and cross-rail underside dimensions are estimated from a single angled view."
+  ]
+}
