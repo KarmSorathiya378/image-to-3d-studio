@@ -1,15 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { User, Shield, Moon, Sun, Laptop, Eye, LogOut } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
 import { useAuthStore } from "@/stores/auth-store";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/providers/theme-provider";
 import { formatDate } from "@/lib/utils";
 
 export default function AccountSettingsPage() {
   const { user, logout } = useAuthStore();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <AppShell showStudioViewer={false}>
@@ -44,7 +49,7 @@ export default function AccountSettingsPage() {
             <div className="p-2.5 rounded bg-muted/40">
               <span className="text-[10px] text-muted-foreground block">Member Since</span>
               <span className="text-foreground">
-                {user?.createdAt ? formatDate(user.createdAt) : "Recently"}
+                {mounted && user?.createdAt ? formatDate(user.createdAt) : "Recently"}
               </span>
             </div>
           </div>

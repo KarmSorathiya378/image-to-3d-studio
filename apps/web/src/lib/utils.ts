@@ -21,5 +21,6 @@ export function formatDate(timestamp: number | string | Date) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   }).format(date);
 }

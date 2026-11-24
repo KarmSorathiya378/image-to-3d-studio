@@ -10,12 +10,14 @@ interface AuthState {
   logout: () => void;
 }
 
+const SEED_TIMESTAMP = 1732400000000;
+
 const DEFAULT_USER: User = {
   id: "usr_solademo",
   name: "Studio Creator",
   email: "creator@studio3d.ai",
   role: "creator",
-  createdAt: Date.now() - 86400000 * 7,
+  createdAt: SEED_TIMESTAMP - 86400000 * 7,
 };
 
 export const useAuthStore = create<AuthState>()(

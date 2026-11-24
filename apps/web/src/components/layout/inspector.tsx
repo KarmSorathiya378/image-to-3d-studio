@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Info,
   Boxes,
@@ -30,6 +30,11 @@ export const Inspector: React.FC = () => {
 
   const [copiedId, setCopiedId] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<"glb" | "obj" | "stl">("glb");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const model = models.find((m) => m.id === activeModelId);
 
@@ -135,7 +140,9 @@ export const Inspector: React.FC = () => {
                 </div>
                 <div className="p-2 rounded bg-muted/40 border border-border">
                   <span className="text-[10px] text-muted-foreground block">Created</span>
-                  <span className="font-semibold text-foreground">{formatDate(model.createdAt)}</span>
+                  <span className="font-semibold text-foreground">
+                    {mounted ? formatDate(model.createdAt) : "—"}
+                  </span>
                 </div>
               </div>
 

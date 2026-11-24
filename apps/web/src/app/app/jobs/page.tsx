@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { History, CheckCircle2, AlertCircle, Clock, ArrowRight, Eye, RefreshCw } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
 import { useJobStore } from "@/stores/job-store";
@@ -14,6 +14,11 @@ export default function JobsPage() {
   const { selectModel } = useStudioStore();
 
   const [expandedJobId, setExpandedJobId] = useState<string | null>(jobs[0]?.id || null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleViewModel = (modelId: string) => {
     selectModel(modelId);
@@ -75,7 +80,7 @@ export default function JobsPage() {
 
                   <div className="flex items-center gap-3">
                     <span className="text-[11px] text-muted-foreground hidden sm:inline">
-                      {formatDate(job.createdAt)}
+                      {mounted ? formatDate(job.createdAt) : "—"}
                     </span>
                     {job.resultModelId && (
                       <button
@@ -119,7 +124,7 @@ export default function JobsPage() {
                           <div key={i} className="flex items-start gap-2 text-muted-foreground">
                             <span className="text-primary shrink-0">&bull;</span>
                             <span className="text-[10px] text-muted-foreground/60 shrink-0">
-                              {new Date(log.timestamp).toLocaleTimeString()}
+                              {mounted ? new Date(log.timestamp).toLocaleTimeString() : "—"}
                             </span>
                             <span className="text-foreground">{log.message}</span>
                           </div>

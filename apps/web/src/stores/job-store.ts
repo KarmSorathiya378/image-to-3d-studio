@@ -15,6 +15,8 @@ interface JobState {
   cancelJob: (jobId: string) => void;
 }
 
+const SEED_TIMESTAMP = 1732400000000;
+
 const INITIAL_JOBS: GenerationJob[] = [
   {
     id: "job_01j7h8",
@@ -33,15 +35,15 @@ const INITIAL_JOBS: GenerationJob[] = [
       promptNotes: "Round seat birch stool with 4 splayed legs",
     },
     logs: [
-      { timestamp: Date.now() - 3600000 * 4, message: "Raw photograph uploaded to private secure object store", stage: "uploading" },
-      { timestamp: Date.now() - 3600000 * 4 + 1200, message: "Vision model identified: single object (seating/stool), 4 legs, 1 circular seat", stage: "analyzing" },
-      { timestamp: Date.now() - 3600000 * 4 + 2800, message: "Planner emitted SceneSpec v1 schema with 6 parts and 2 PBR materials", stage: "planning" },
-      { timestamp: Date.now() - 3600000 * 4 + 4500, message: "Deterministic Blender geometry worker constructed 1,420 triangles", stage: "building" },
-      { timestamp: Date.now() - 3600000 * 4 + 6100, message: "Re-import GLB validation verified: bounded, manifold geometry", stage: "validating" },
+      { timestamp: SEED_TIMESTAMP - 3600000 * 4, message: "Raw photograph uploaded to private secure object store", stage: "uploading" },
+      { timestamp: SEED_TIMESTAMP - 3600000 * 4 + 1200, message: "Vision model identified: single object (seating/stool), 4 legs, 1 circular seat", stage: "analyzing" },
+      { timestamp: SEED_TIMESTAMP - 3600000 * 4 + 2800, message: "Planner emitted SceneSpec v1 schema with 6 parts and 2 PBR materials", stage: "planning" },
+      { timestamp: SEED_TIMESTAMP - 3600000 * 4 + 4500, message: "Deterministic Blender geometry worker constructed 1,420 triangles", stage: "building" },
+      { timestamp: SEED_TIMESTAMP - 3600000 * 4 + 6100, message: "Re-import GLB validation verified: bounded, manifold geometry", stage: "validating" },
     ],
     resultModelId: "mod_classic_stool",
-    createdAt: Date.now() - 3600000 * 4,
-    completedAt: Date.now() - 3600000 * 4 + 7000,
+    createdAt: SEED_TIMESTAMP - 3600000 * 4,
+    completedAt: SEED_TIMESTAMP - 3600000 * 4 + 7000,
   },
 ];
 

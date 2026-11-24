@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FolderKanban, Plus, Box, Calendar, Clock, ArrowRight, Trash2 } from "lucide-react";
@@ -11,6 +11,11 @@ import { formatDate } from "@/lib/utils";
 export default function ProjectsPage() {
   const router = useRouter();
   const { projects, selectProject, setActiveModal } = useStudioStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleOpenProject = (id: string) => {
     selectProject(id);
@@ -67,7 +72,7 @@ export default function ProjectsPage() {
               <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-3 border-t border-border/60">
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  Updated {formatDate(proj.updatedAt)}
+                  Updated {mounted ? formatDate(proj.updatedAt) : "—"}
                 </span>
                 <span className="text-primary font-semibold flex items-center gap-0.5 text-xs group-hover:translate-x-0.5 transition-transform">
                   Open Studio <ArrowRight className="w-3 h-3" />

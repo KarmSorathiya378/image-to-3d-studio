@@ -21,7 +21,7 @@ import {
 import { useStudioStore } from "@/stores/studio-store";
 import { useProviderStore } from "@/stores/provider-store";
 import { useAuthStore } from "@/stores/auth-store";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/providers/theme-provider";
 
 interface TopBarProps {
   onToggleMobileSidebar?: () => void;

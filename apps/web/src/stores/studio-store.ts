@@ -34,13 +34,16 @@ interface StudioState {
   addModel: (model: ModelAsset) => void;
 }
 
+// Fixed constant base timestamp (epoch ms) to ensure deterministic SSR and client hydration
+const SEED_TIMESTAMP = 1732400000000;
+
 const INITIAL_PROJECTS: Project[] = [
   {
     id: "proj_woodworking",
     name: "Scandinavian Stool Collection",
     description: "Single-photo procedural 3D reconstruction of classic Nordic furniture",
-    createdAt: Date.now() - 86400000 * 3,
-    updatedAt: Date.now() - 3600000 * 2,
+    createdAt: SEED_TIMESTAMP - 86400000 * 3,
+    updatedAt: SEED_TIMESTAMP - 3600000 * 2,
     modelsCount: 2,
     activeModelId: "mod_classic_stool",
   },
@@ -48,8 +51,8 @@ const INITIAL_PROJECTS: Project[] = [
     id: "proj_lighting",
     name: "Architectural Table Lamps",
     description: "VLM geometric planning from museum archive photos",
-    createdAt: Date.now() - 86400000 * 5,
-    updatedAt: Date.now() - 86400000 * 1,
+    createdAt: SEED_TIMESTAMP - 86400000 * 5,
+    updatedAt: SEED_TIMESTAMP - 86400000 * 1,
     modelsCount: 1,
     activeModelId: "mod_brass_lamp",
   },
@@ -68,7 +71,7 @@ const INITIAL_MODELS: ModelAsset[] = [
     dimensions: { width: 1.5, height: 1.52, depth: 1.5 },
     sizeBytes: 184520,
     version: 1,
-    createdAt: Date.now() - 3600000 * 4,
+    createdAt: SEED_TIMESTAMP - 3600000 * 4,
     sceneSpec: {
       schemaVersion: "1.0",
       objectName: "scandinavian_stool",
@@ -102,7 +105,7 @@ const INITIAL_MODELS: ModelAsset[] = [
     dimensions: { width: 0.8, height: 1.8, depth: 1.1 },
     sizeBytes: 245000,
     version: 1,
-    createdAt: Date.now() - 86400000,
+    createdAt: SEED_TIMESTAMP - 86400000,
     sceneSpec: {
       schemaVersion: "1.0",
       objectName: "brass_desk_lamp",
