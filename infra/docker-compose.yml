@@ -1,0 +1,232 @@
+name: image-to-3d-studio
+
+services:
+  # ============================================================================
+  # Relational Database: PostgreSQL 16
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: image3d-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-image_to_3d}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-image_to_3d}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - image3d-network
+
+  # ============================================================================
+  # In-Memory Cache & Message Broker: Redis 7
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: image3d-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+    networks:
+      - image3d-network
+
+  # ============================================================================
+  # S3-Compatible Object Storage: MinIO
+  # ============================================================================
+  minio:
+    image: minio/minio:RELEASE.2024-11-07T00-52-28Z
+    container_name: image3d-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - image3d-network
+
+  # Initialization helper to ensure default bucket exists
+  minio-init:
+    image: minio/mc:RELEASE.2024-11-05T11-41-45Z
+    container_name: image3d-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      S3_BUCKET: ${S3_BUCKET:-private-model-assets}
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
+      mc mb --ignore-existing local/$${S3_BUCKET};
+      exit 0;
+      "
+    networks:
+      - image3d-network
+
+  # ============================================================================
+  # Deterministic Blender Geometry Worker (Isolated Container)
+  # ============================================================================
+  blender-worker:
+    build:
+      context: ..
+      dockerfile: infra/docker/blender-worker.Dockerfile
+    container_name: image3d-blender-worker
+    restart: unless-stopped
+    ports:
+      - "${BLENDER_WORKER_PORT:-8001}:8000"
+    environment:
+      BLENDER_BIN: /usr/bin/blender
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+      S3_BUCKET: ${S3_BUCKET:-private-model-assets}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-minioadmin}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-minioadmin}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - image3d-network
+
+  # ============================================================================
+  # FastAPI Backend API
+  # ============================================================================
+  api:
+    build:
+      context: ..
+      dockerfile: infra/docker/api.Dockerfile
+    container_name: image3d-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@postgres:5432/image_to_3d}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      AUTH_SECRET: ${AUTH_SECRET:-dev-insecure-secret-key-change-in-prod-32bytes!}
+      CREDENTIAL_ENCRYPTION_MASTER_KEY: ${CREDENTIAL_ENCRYPTION_MASTER_KEY:-dev-master-encryption-key-for-credentials-32b}
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+      S3_BUCKET: ${S3_BUCKET:-private-model-assets}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-minioadmin}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-minioadmin}
+      GEOMETRY_WORKER_URL: ${GEOMETRY_WORKER_URL:-http://blender-worker:8000}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - image3d-network
+
+  # ============================================================================
+  # Background Job Orchestration Worker
+  # ============================================================================
+  worker:
+    build:
+      context: ..
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: image3d-worker
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      blender-worker:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@postgres:5432/image_to_3d}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      AUTH_SECRET: ${AUTH_SECRET:-dev-insecure-secret-key-change-in-prod-32bytes!}
+      CREDENTIAL_ENCRYPTION_MASTER_KEY: ${CREDENTIAL_ENCRYPTION_MASTER_KEY:-dev-master-encryption-key-for-credentials-32b}
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+      S3_BUCKET: ${S3_BUCKET:-private-model-assets}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-minioadmin}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-minioadmin}
+      GEOMETRY_WORKER_URL: ${GEOMETRY_WORKER_URL:-http://blender-worker:8000}
+    networks:
+      - image3d-network
+
+  # ============================================================================
+  # Next.js Frontend Application
+  # ============================================================================
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+    container_name: image3d-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ > /dev/null 2>&1 || curl -sf http://localhost:3000/ > /dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - image3d-network
+
+volumes:
+  postgres_data:
+    name: image3d_postgres_data
+  redis_data:
+    name: image3d_redis_data
+  minio_data:
+    name: image3d_minio_data
+
+networks:
+  image3d-network:
+    name: image3d_network
+    driver: bridge
